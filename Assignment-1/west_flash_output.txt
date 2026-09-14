@@ -1,0 +1,15 @@
+(.venv) atharv@ubuntu24:~/zephyr-course$ west flash
+-- west flash: rebuilding
+[2/2] Running utility command for native_runner_executable
+-- west flash: using runner native
+*** Booting Zephyr OS build v4.4.0-15180-gdc577c7239d9 ***
+[00:00:00.000,000] <inf> main: LED state: OFF
+[00:00:01.010,000] <inf> main: LED state: ON
+[00:00:02.020,000] <inf> main: LED state: OFF
+[00:00:03.030,000] <inf> main: LED state: ON
+[00:00:04.040,000] <inf> main: LED state: OFF
+[00:00:05.050,000] <inf> main: LED state: ON
+^C
+Stopped at 5.990s
+
+(.venv) atharv@ubuntu24:~/zephyr-course$ 

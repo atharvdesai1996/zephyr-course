@@ -1,0 +1,199 @@
+### Here are my west debug learnings by playing around with watchpoints
+
+(.venv) atharv@ubuntu24:~/zephyr-course$ west debug
+-- west debug: rebuilding
+[2/2] Running utility command for native_runner_executable
+-- west debug: using runner native
+Reading symbols from /home/atharv/zephyr-course/build/zephyr/zephyr.exe...
+(gdb) delete run
+(gdb) break main.cpp:25
+Breakpoint 1 at 0x4016cc: file /home/atharv/zephyr-course/app/src/main.cpp, line 25.
+(gdb) continue
+The program is not being run.
+(gdb) run
+Starting program: /home/atharv/zephyr-course/build/zephyr/zephyr.exe 
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.ubuntu.com>
+Enable debuginfod for this session? (y or [n]) y
+Debuginfod has been enabled.
+To make this setting permanent, add 'set debuginfod enabled on' to .gdbinit.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/aarch64-linux-gnu/libthread_db.so.1".
+[New Thread 0xfffff7d3f1a0 (LWP 68799)]
+[New Thread 0xfffff752f1a0 (LWP 68800)]
+[New Thread 0xfffff6d1f1a0 (LWP 68801)]
+*** Booting Zephyr OS build v4.4.0-15180-gdc577c7239d9 ***
+[Switching to Thread 0xfffff752f1a0 (LWP 68800)]
+
+Thread 3 "zephyr.exe" hit Breakpoint 1, main ()
+    at /home/atharv/zephyr-course/app/src/main.cpp:25
+25              led_state = !led_state;
+(gdb) print &led_state
+$1 = (volatile bool *) 0xfffff752e84f
+(gdb) delete 1
+(gdb) continue
+Continuing.
+[00:00:00.000,000] <inf> main: LED state: OFF
+[00:00:01.010,000] <inf> main: LED state: ON
+[00:00:02.020,000] <inf> main: LED state: OFF
+[00:00:03.030,000] <inf> main: LED state: ON
+[00:00:04.040,000] <inf> main: LED state: OFF
+[00:00:05.050,000] <inf> main: LED state: ON
+[00:00:06.060,000] <inf> main: LED state: OFF
+[00:00:07.070,000] <inf> main: LED state: ON
+[00:00:08.080,000] <inf> main: LED state: OFF
+[00:00:09.090,000] <inf> main: LED state: ON
+[00:00:10.100,000] <inf> main: LED state: OFF
+[00:00:11.110,000] <inf> main: LED state: ON
+[00:00:12.120,000] <inf> main: LED state: OFF
+[00:00:13.130,000] <inf> main: LED state: ON
+[00:00:14.140,000] <inf> main: LED state: OFF
+[00:00:15.150,000] <inf> main: LED state: ON
+[00:00:16.160,000] <inf> main: LED state: OFF
+[00:00:17.170,000] <inf> main: LED state: ON
+[00:00:18.180,000] <inf> main: LED state: OFF
+[00:00:19.190,000] <inf> main: LED state: ON
+[00:00:20.200,000] <inf> main: LED state: OFF
+[00:00:21.210,000] <inf> main: LED state: ON
+[00:00:22.220,000] <inf> main: LED state: OFF
+[00:00:23.230,000] <inf> main: LED state: ON
+[00:00:24.240,000] <inf> main: LED state: OFF
+[00:00:25.250,000] <inf> main: LED state: ON
+[Thread 0xfffff7d3f1a0 (LWP 68799) exited]
+[00:00:26.260,000] <inf> main: LED state: OFF
+[00:00:27.270,000] <inf> main: LED state: ON
+[00:00:28.280,000] <inf> main: LED state: OFF
+[00:00:29.290,000] <inf> main: LED state: ON
+[00:00:30.300,000] <inf> main: LED state: OFF
+[00:00:31.310,000] <inf> main: LED state: ON
+[00:00:32.320,000] <inf> main: LED state: OFF
+[00:00:33.330,000] <inf> main: LED state: ON
+[00:00:34.340,000] <inf> main: LED state: OFF
+[00:00:35.350,000] <inf> main: LED state: ON
+^C
+Thread 1 "zephyr.exe" received signal SIGINT, Interrupt.
+[Switching to Thread 0xfffff7ff2020 (LWP 68776)]
+Download failed: Invalid argument.  Continuing without source file ./time/../sysdeps/unix/sysv/linux/clock_nanosleep.c.
+0x0000fffff7dfbd90 in __GI___clock_nanosleep (clock_id=<optimized out>, 
+    clock_id@entry=0, flags=flags@entry=0, req=0xffffffffebb8, 
+    rem=0xffffffffebc8) at ../sysdeps/unix/sysv/linux/clock_nanosleep.c:78
+warning: 78     ../sysdeps/unix/sysv/linux/clock_nanosleep.c: No such file or directory
+(gdb) run
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/atharv/zephyr-course/build/zephyr/zephyr.exe 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/aarch64-linux-gnu/libthread_db.so.1".
+[New Thread 0xfffff7d3f1a0 (LWP 69063)]
+[New Thread 0xfffff752f1a0 (LWP 69064)]
+[New Thread 0xfffff6d1f1a0 (LWP 69065)]
+*** Booting Zephyr OS build v4.4.0-15180-gdc577c7239d9 ***
+[00:00:00.000,000] <inf> main: LED state: OFF
+[Thread 0xfffff7d3f1a0 (LWP 69063) exited]
+[00:00:01.010,000] <inf> main: LED state: ON
+[00:00:02.020,000] <inf> main: LED state: OFF
+[00:00:03.030,000] <inf> main: LED state: ON
+[00:00:04.040,000] <inf> main: LED state: OFF
+[00:00:05.050,000] <inf> main: LED state: ON
+[00:00:06.060,000] <inf> main: LED state: OFF
+[00:00:07.070,000] <inf> main: LED state: ON
+[00:00:08.080,000] <inf> main: LED state: OFF
+[00:00:09.090,000] <inf> main: LED state: ON
+[00:00:10.100,000] <inf> main: LED state: OFF
+^C[00:00:11.110,000] <inf> main: LED state: ON
+[00:00:12.120,000] <inf> main: LED state: OFF
+^C
+Thread 1 "zephyr.exe" received signal SIGINT, Interrupt.
+Download failed: Invalid argument.  Continuing without source file ./time/../sysdeps/unix/sysv/linux/clock_nanosleep.c.
+0x0000fffff7dfbd90 in __GI___clock_nanosleep (clock_id=<optimized out>, 
+    clock_id@entry=0, flags=flags@entry=0, req=0xffffffffebb8, 
+    rem=0xffffffffebc8) at ../sysdeps/unix/sysv/linux/clock_nanosleep.c:78
+warning: 78     ../sysdeps/unix/sysv/linux/clock_nanosleep.c: No such file or directory
+(gdb) break main.cpp:25
+Breakpoint 2 at 0x4016cc: file /home/atharv/zephyr-course/app/src/main.cpp, line 25.
+(gdb) continue
+Continuing.
+[Switching to Thread 0xfffff752f1a0 (LWP 69064)]
+
+Thread 3 "zephyr.exe" hit Breakpoint 2, main ()
+    at /home/atharv/zephyr-course/app/src/main.cpp:25
+25              led_state = !led_state;
+(gdb) print &led_state
+$2 = (volatile bool *) 0xfffff752e84f
+(gdb) watch *0xfffff752e84f
+Hardware watchpoint 3: *0xfffff752e84f
+(gdb) clear main.cpp:25
+Deleted breakpoint 2 
+(gdb) delete 1
+No breakpoint number 1.
+(gdb) continue
+Continuing.
+
+Thread 3 "zephyr.exe" hit Hardware watchpoint 3: *0xfffff752e84f
+
+Old value = 1390964736
+New value = 1390964737
+main () at /home/atharv/zephyr-course/app/src/main.cpp:26
+26              LOG_INF("LED state: %s", led_state ? "ON" : "OFF");
+(gdb) continue
+Continuing.
+[00:00:13.130,000] <inf> main: LED state: ON
+
+Thread 3 "zephyr.exe" hit Hardware watchpoint 3: *0xfffff752e84f
+
+Old value = 1390964737
+New value = 1390964736
+main () at /home/atharv/zephyr-course/app/src/main.cpp:26
+26              LOG_INF("LED state: %s", led_state ? "ON" : "OFF");
+(gdb) continue
+Continuing.
+[00:00:14.140,000] <inf> main: LED state: OFF
+
+Thread 3 "zephyr.exe" hit Hardware watchpoint 3: *0xfffff752e84f
+
+Old value = 1390964736
+New value = 1390964737
+main () at /home/atharv/zephyr-course/app/src/main.cpp:26
+26              LOG_INF("LED state: %s", led_state ? "ON" : "OFF");
+(gdb) continue
+Continuing.
+[00:00:15.150,000] <inf> main: LED state: ON
+
+Thread 3 "zephyr.exe" hit Hardware watchpoint 3: *0xfffff752e84f
+
+Old value = 1390964737
+New value = 1390964736
+main () at /home/atharv/zephyr-course/app/src/main.cpp:26
+26              LOG_INF("LED state: %s", led_state ? "ON" : "OFF");
+(gdb) continue
+Continuing.
+[00:00:16.160,000] <inf> main: LED state: OFF
+
+Thread 3 "zephyr.exe" hit Hardware watchpoint 3: *0xfffff752e84f
+
+Old value = 1390964736
+New value = 1390964737
+main () at /home/atharv/zephyr-course/app/src/main.cpp:26
+26              LOG_INF("LED state: %s", led_state ? "ON" : "OFF");
+(gdb) continue
+Continuing.
+[00:00:17.170,000] <inf> main: LED state: ON
+
+Thread 3 "zephyr.exe" hit Hardware watchpoint 3: *0xfffff752e84f
+
+Old value = 1390964737
+New value = 1390964736
+main () at /home/atharv/zephyr-course/app/src/main.cpp:26
+26              LOG_INF("LED state: %s", led_state ? "ON" : "OFF");
+(gdb) continue
+Continuing.
+[00:00:18.180,000] <inf> main: LED state: OFF
+
+Thread 3 "zephyr.exe" hit Hardware watchpoint 3: *0xfffff752e84f
+
+Old value = 1390964736
+New value = 1390964737
+main () at /home/atharv/zephyr-course/app/src/main.cpp:26
+26              LOG_INF("LED state: %s", led_state ? "ON" : "OFF");
+(gdb) continue
