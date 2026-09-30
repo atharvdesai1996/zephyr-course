@@ -1,0 +1,23 @@
+/ {
+    /* Map the alias to your specific LED so DT_ALIAS(led0) works in C */
+    aliases {
+        led0 = &red_led;
+        led1 = &blue_led;
+    };
+
+    leds {
+        /* Required to load the GPIO LED driver */
+        compatible = "gpio-leds"; 
+        
+        red_led: led_0 {
+            label = "LED 0 RED";
+            /* Try ACTIVE_LOW if HIGH keeps the LED permanently on */
+            gpios = <&gpioh 10 GPIO_ACTIVE_LOW>; 
+        };
+        
+        blue_led: led_1 {
+            label = "LED 1 BLUE";
+            gpios = <&gpioh 12 GPIO_ACTIVE_LOW>;
+        };
+    };
+};
