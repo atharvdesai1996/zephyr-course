@@ -1,24 +1,20 @@
 / {
-    /* Map the alias to your specific LED so DT_ALIAS(led0) works in C */
-    aliases {
-        led0 = &red_led;
-        led1 = &blue_led;
-        app-led = &red_led;
+    /* Send console/logs to lpuart1, which is wired to the Linux side (/dev/ttyHS1) */
+    chosen {
+        zephyr,console = &lpuart1;
+        zephyr,shell-uart = &lpuart1;
     };
 
-    leds {
-        /* Required to load the GPIO LED driver */
-        compatible = "gpio-leds"; 
-        
-        red_led: led_0 {
-            label = "LED 0 RED";
-            /* Try ACTIVE_LOW if HIGH keeps the LED permanently on */
-            gpios = <&gpioh 10 GPIO_ACTIVE_LOW>; 
-        };
-        
-        blue_led: led_1 {
-            label = "LED 1 BLUE";
-            gpios = <&gpioh 12 GPIO_ACTIVE_LOW>;
-        };
+    aliases {
+        app-led = &led3_red;
+    };
+
+    our_driver0: our_driver {
+        compatible = "our,driver";
+        status = "okay";
+    };
+    our_driver1: our_driver@1 {
+        compatible = "our,driver";
+        status = "okay";
     };
 };
