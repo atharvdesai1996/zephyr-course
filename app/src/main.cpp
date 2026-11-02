@@ -4,7 +4,7 @@
 #include <zephyr/logging/log.h>
 
 /* The devicetree node identifiers for the aliases */
-#define LED_NODE_RED DT_ALIAS(led0)
+#define LED_NODE_RED DT_ALIAS(app_led)
 #define LED_NODE_BLUE DT_ALIAS(led1)
 
 static const struct gpio_dt_spec led_red = GPIO_DT_SPEC_GET(LED_NODE_RED, gpios);

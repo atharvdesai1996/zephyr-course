@@ -17,10 +17,11 @@ menuconfig LED_SUBSYSTEM
 
         config APP_HEARTBEAT_PERIOD_MS
             int
+            range 100 2000
             default 500 if BLINK_SLEEP_500MS
             default 100 if BLINK_SLEEP_100MS
             default 2000 if BLINK_SLEEP_2000MS
-            default 0
+            default 500
 
         menuconfig LED_ADVANCED
             bool "Advanced LED settings"
