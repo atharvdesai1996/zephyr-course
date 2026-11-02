@@ -18,9 +18,15 @@ namespace {
     void test() {
         const struct device* driver = DEVICE_DT_GET(DT_NODELABEL(our_driver0));
         struct sensor_value value;
-       //This actually does channel_get_my_impl(driver, SENSOR_CHAN_AMBIENT_TEMP, &value);
-      auto ret = sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &value);
-        LOG_INF("Channel get returned: %d", ret);
+
+        // Calls sample_fetch_my_impl(driver, SENSOR_CHAN_ALL) -> LED ON
+        auto ret = sensor_sample_fetch(driver);
+        LOG_INF("Sample fetch returned: %d", ret);
+        k_msleep(5000);
+
+        // Calls channel_get_my_impl(driver, SENSOR_CHAN_AMBIENT_TEMP, &value) -> LED OFF
+        ret = sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &value);
+        LOG_INF("Channel get returned: %d, value: %d", ret, value.val1);
     }
 }
 
