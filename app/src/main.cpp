@@ -3,6 +3,8 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
+#include "our_driver.h"
+
 /* The devicetree node identifiers for the aliases */
 #define LED_NODE_RED DT_ALIAS(app_led)
 #define LED_NODE_BLUE DT_ALIAS(led1)
@@ -19,6 +21,9 @@ namespace {
         const struct device* driver = DEVICE_DT_GET(DT_NODELABEL(our_driver0));
         struct sensor_value value;
 
+        // Extension API: change a field in the instance's dynamic data
+        our_driver_set_level(driver, 42);
+
         // Calls sample_fetch_my_impl(driver, SENSOR_CHAN_ALL) -> LED ON
         auto ret = sensor_sample_fetch(driver);
         LOG_INF("Sample fetch returned: %d", ret);
@@ -26,7 +31,7 @@ namespace {
 
         // Calls channel_get_my_impl(driver, SENSOR_CHAN_AMBIENT_TEMP, &value) -> LED OFF
         ret = sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &value);
-        LOG_INF("Channel get returned: %d, value: %d", ret, value.val1);
+        LOG_INF("Channel get returned: %d, led: %d, level: %d", ret, value.val1, value.val2);
     }
 }
 

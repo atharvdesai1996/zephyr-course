@@ -4,6 +4,8 @@
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/logging/log.h>
 
+#include "our_driver.h"
+
 // Use instead of _DECLARE if you have another module in our_driver channel
 // We can register only one, declare multiple times
 LOG_MODULE_REGISTER(our_driver, LOG_LEVEL_INF);
@@ -16,6 +18,7 @@ struct our_driver_config {
 /* Per-instance mutable runtime data (lives in RAM) */
 struct our_driver_data {
     int led_state; /* last state written to the LED (1 = on, 0 = off) */
+    int level;     /* user-settable via our_driver_set_level() */
 };
 
 /*
@@ -62,7 +65,7 @@ static int channel_get_my_impl(const struct device *dev,
     }
 
     value->val1 = data->led_state; /* report the state the LED had */
-    value->val2 = 0;
+    value->val2 = data->level;
 
     int ret = gpio_pin_set_dt(&cfg->led, 0);
     if (ret < 0) {
@@ -79,6 +82,16 @@ static DEVICE_API(sensor, api_iomico_lecture) = {
     .sample_fetch = sample_fetch_my_impl,
     .channel_get = channel_get_my_impl,
 };
+
+/* Custom extension API (declared in our_driver.h) */
+int our_driver_set_level(const struct device *dev, int level)
+{
+    struct our_driver_data *data = dev->data;
+
+    data->level = level;
+    LOG_INF("%s: level set to %d", dev->name, level);
+    return 0;
+}
 
 // init function
 static int init(const struct device *dev)
