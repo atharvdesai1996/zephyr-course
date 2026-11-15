@@ -93,6 +93,23 @@ int our_driver_set_level(const struct device *dev, int level)
     return 0;
 }
 
+int our_driver_get_info(const struct device *dev, struct our_driver_info *info)
+{
+    /* Only valid for our_driver devices: their api pointer is our table */
+    if (dev == NULL || info == NULL || dev->api != &api_iomico_lecture) {
+        return -EINVAL;
+    }
+
+    const struct our_driver_config *cfg = dev->config;
+    const struct our_driver_data *data = dev->data;
+
+    info->led_state = data->led_state;
+    info->level = data->level;
+    info->led_port = cfg->led.port->name;
+    info->led_pin = cfg->led.pin;
+    return 0;
+}
+
 // init function
 static int init(const struct device *dev)
 {
