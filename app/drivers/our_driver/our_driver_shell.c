@@ -1,3 +1,5 @@
+#include <errno.h>
+#include <stdlib.h>
 #include <string.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/sensor.h>
@@ -98,6 +100,49 @@ static int cmd_info_handler(const struct shell *sh, size_t argc, char **argv)
     return 0;
 }
 
+#define LEVEL_MIN 0
+#define LEVEL_MAX 100
+
+/* sensor set <dev> <value>  ->  our_driver_set_level() (custom extension API) */
+static int cmd_set_handler(const struct shell *sh, size_t argc, char **argv)
+{
+    /* argc is already enforced to be 3 by SHELL_CMD_ARG(..., 3, 0) */
+    const struct device *dev = get_ready_device(sh, argv[1]);
+
+    if (dev == NULL) {
+        return -ENODEV;
+    }
+
+    /* Only our_driver devices implement the extension API */
+    struct our_driver_info info;
+    if (our_driver_get_info(dev, &info) != 0) {
+        shell_error(sh, "'%s' is not an our_driver device", dev->name);
+        return -EINVAL;
+    }
+
+    /* Validate: must be a whole number, nothing trailing ("12abc" rejected) */
+    char *end;
+    errno = 0;
+    long value = strtol(argv[2], &end, 10);
+
+    if (end == argv[2] || *end != '\0' || errno == ERANGE) {
+        shell_error(sh, "Invalid value '%s': must be an integer", argv[2]);
+        return -EINVAL;
+    }
+    if (value < LEVEL_MIN || value > LEVEL_MAX) {
+        shell_error(sh, "Value %ld out of range [%d..%d]", value, LEVEL_MIN, LEVEL_MAX);
+        return -EINVAL;
+    }
+
+    int ret = our_driver_set_level(dev, (int)value);
+    if (ret < 0) {
+        shell_error(sh, "our_driver_set_level failed: %d", ret);
+        return ret;
+    }
+    shell_print(sh, "%s: level = %ld", dev->name, value);
+    return 0;
+}
+
 SHELL_STATIC_SUBCMD_SET_CREATE(sensor_subcmds,
     SHELL_CMD_ARG(fetch, NULL, "Fetch a sample.  Usage: sensor fetch <device>",
                   cmd_fetch_handler, 2, 0),
@@ -105,6 +150,9 @@ SHELL_STATIC_SUBCMD_SET_CREATE(sensor_subcmds,
                   cmd_read_handler, 2, 0),
     SHELL_CMD_ARG(info, NULL, "Device name and ready state.  Usage: sensor info <device>",
                   cmd_info_handler, 2, 0),
+    /* 3 mandatory = "set" + <device> + <value>; shell rejects other counts */
+    SHELL_CMD_ARG(set, NULL, "Set level (0-100).  Usage: sensor set <device> <value>",
+                  cmd_set_handler, 3, 0),
     SHELL_SUBCMD_SET_END
 );
 
