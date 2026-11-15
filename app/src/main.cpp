@@ -1,10 +1,12 @@
-
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/sensor.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
+#include "our_driver.h"
+
 /* The devicetree node identifiers for the aliases */
-#define LED_NODE_RED DT_ALIAS(led0)
+#define LED_NODE_RED DT_ALIAS(app_led)
 #define LED_NODE_BLUE DT_ALIAS(led1)
 
 static const struct gpio_dt_spec led_red = GPIO_DT_SPEC_GET(LED_NODE_RED, gpios);
@@ -12,8 +14,30 @@ static const struct gpio_dt_spec led_blue = GPIO_DT_SPEC_GET(LED_NODE_BLUE, gpio
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
+
+namespace {
+    // Test my driver
+    void test() {
+        const struct device* driver = DEVICE_DT_GET(DT_NODELABEL(our_driver0));
+        struct sensor_value value;
+
+        // Extension API: change a field in the instance's dynamic data
+        our_driver_set_level(driver, 42);
+
+        // Calls sample_fetch_my_impl(driver, SENSOR_CHAN_ALL) -> LED ON
+        auto ret = sensor_sample_fetch(driver);
+        LOG_INF("Sample fetch returned: %d", ret);
+        k_msleep(5000);
+
+        // Calls channel_get_my_impl(driver, SENSOR_CHAN_AMBIENT_TEMP, &value) -> LED OFF
+        ret = sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &value);
+        LOG_INF("Channel get returned: %d, led: %d, level: %d", ret, value.val1, value.val2);
+    }
+}
+
 int main(void)
 {
+    test();
     bool is_red_turn = true;
 
     /* Check if devices are ready */
